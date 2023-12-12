@@ -25,3 +25,11 @@ Required to follow the principles of the [Reactive Manifesto](https://duckduckgo
 <li>An observer is any object that wishes to be notified when the state of another object changes</li>
 </ul>
 
+## Base Clases
+<ul>
+<li><b>io.reactivex.rxjava3.core.Flowable:</b> 0..N flows, supporting Reactive-Streams and backpressure.</li>
+<li><b>io.reactivex.rxjava3.core.Observable:</b> 0..N flows, no backpressure.</li>
+<li><b>io.reactivex.rxjava3.core.Single:</b> a flow of exactly 1 item or an error.</li>
+<li><b>io.reactivex.rxjava3.core.Completable:</b> a flow without items but only a completion or error signal.</li>
+<li><b>io.reactivex.rxjava3.core.Maybe:</b> a flow with no items, exactly one item or an error.</li>
+</ul>

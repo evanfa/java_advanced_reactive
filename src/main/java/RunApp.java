@@ -21,5 +21,6 @@ public class RunApp {
         System.out.println("Matches every divisible number for 3 AND 5 AND 7");
         System.out.println("------------------------------------------------");
         FlowableExamples.intFlowForThreeConditions();
+        FlowableExamples.intFlowEmittedSchedule();
     }
 }

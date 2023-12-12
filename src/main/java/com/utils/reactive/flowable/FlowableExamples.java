@@ -1,6 +1,7 @@
 package com.utils.reactive.flowable;
 
 import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 
 public class FlowableExamples {
     /**
@@ -29,5 +30,20 @@ public class FlowableExamples {
     public static void intFlowForThreeConditions(){
         Flowable<Integer> intStream = Flowable.range(1, 10001).filter(v -> v % 3 == 0).filter(v -> v % 5 == 0).filter(v -> v % 7 == 0);
         intStream.subscribe(System.out::println, Throwable::printStackTrace);
+    }
+
+    /**
+     *
+     */
+    public static void intFlowEmittedSchedule(){
+        try {
+             Flowable.range(1,10).subscribeOn(Schedulers.newThread()).map(v->v*v).blockingSubscribe(System.out::println);
+            Flowable.range(1, 5)
+                    .subscribeOn(Schedulers.io())
+                    .map(v -> v * v)
+                    .blockingSubscribe(System.out::println);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -8,6 +8,11 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.utils.commons.lib.FileReader.loadTotalRecordsFromCSVFile;
 
 public class FlowableExamples {
     private static int indexId = 0;
@@ -54,36 +59,53 @@ public class FlowableExamples {
     }
 
     /**
-     * Function that performs a list search - Benchmark comparison againt streams
-     * RxJava Implementation using Observable Class for Reactive Programming
-     * @param searchString
-     * @return ListWithMatchesFound
+     * This function has an observer that blocking it current thread to search, match and end.
+     * RxJava - Reactive programming
+     * @param inputToSearch
      */
-    public static ArrayList<String> execSearchUsingSchedulersInCSVtoRecord(String searchString) throws Exception {
-        ArrayList<String> searchResultList = new ArrayList<>();
+    public  static void listMatcherScheduler(String inputToSearch){
+        Pattern pattern = Pattern.compile(inputToSearch, Pattern.CASE_INSENSITIVE);
 
-        System.out.println("Size: "+FileReader.getRecordsInCSVFile(EnvVars.PATH_FILE_BITACORAS,0).size());
-        Disposable disposable =
-                Observable.fromIterable(FileReader.getRecordsInCSVFile(EnvVars.PATH_FILE_BITACORAS,0))
+        List<String> str = loadTotalRecordsFromCSVFile(EnvVars.PATH_FILE_TVDR);
+        System.out.println("Size: "+str.size());
+
+        Observable.fromIterable(str)
                 .subscribeOn(Schedulers.io())
-                .filter(item->item.matches(searchString))
-                .subscribe(item-> System.out.println("Found: "+item),
+                .blockingSubscribe(item->{
+                            Matcher matcher = pattern.matcher(item);
+                            if (matcher.find()) {
+                                System.out.println("Match Found: "+item);
+                            }
+                        },
                         error-> System.out.println("Fail: "+error),
-                        ()-> System.out.println("Done Execution")
-                );
-
-        ((Disposable) disposable).dispose();
-        /*try {
-            Observable.fromIterable(FileReader.getRecordsInCSVFile(EnvVars.PATH_FILE_BITACORAS,0))
-                    .subscribeOn(Schedulers.io())
-                    .filter(item->item.matches(searchString))
-                    .subscribe(item-> System.out.println("Found: "+item),
-                            error-> System.out.println("Fail: "+error),
-                            ()-> System.out.println("Done Execution")
-                    );
-        } catch (Exception e) {
-            System.out.println("Exception:"+e);
-        }*/
-        return searchResultList;
+                        ()-> System.out.println("Done Execution"));
     }
+
+    public static void listMatcherLinear(String inputToSearch){
+        Pattern pattern = Pattern.compile(inputToSearch, Pattern.CASE_INSENSITIVE);
+        List<String> str = loadTotalRecordsFromCSVFile(EnvVars.PATH_FILE_TVDR);
+        System.out.println("Size: "+str.size());
+        for (String st:str) {
+            Matcher matcher = pattern.matcher(st);
+            if (matcher.find()) {
+                System.out.println("Match Found: "+st);
+            }
+        }
+    }
+
+    public  static void listMatcherStreamParallel(String inputToSearch) {
+        Pattern pattern = Pattern.compile(inputToSearch, Pattern.CASE_INSENSITIVE);
+        List<String> str = loadTotalRecordsFromCSVFile(EnvVars.PATH_FILE_TVDR);
+        System.out.println("Size: " + str.size());
+        str.parallelStream().forEach(
+                item->{
+                    Matcher matcher = pattern.matcher(item);
+                    if(matcher.find()){
+                        System.out.println("Match Found: "+item);
+                    }
+                }
+        );
+
+    }
+
 }

@@ -95,3 +95,5 @@ Flowable.range(1, 5)
 .map(v -> v * v)
 .blockingSubscribe(System.out::println);
 ```
+
+## Benchmark

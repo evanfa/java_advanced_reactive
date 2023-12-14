@@ -4,6 +4,7 @@ public class EnvVars {
     public static final char DEFAULT_SEPARATOR =  ',';
     public static final char DEFAULT_QUOTE = '"';
     public  static final String PATH_FILE_BITACORAS = "C:\\Users\\fabio_rodriguez\\OneDrive - TransCanada Corporation\\Documents\\IT\\Paths-CSV-CopyFiles\\path_files-bitacoras-10Nov2023.csv";
+    public static final String PATH_FILE_TVDR = "C:/Users/fabio_rodriguez/OneDrive - TransCanada Corporation/Documents/IT/Paths-CSV-CopyFiles/TVDR-dump-totalfiles-permits-28Oct2023.csv";
 
     public EnvVars() {
     }

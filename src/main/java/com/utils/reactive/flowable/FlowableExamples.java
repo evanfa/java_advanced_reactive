@@ -1,9 +1,16 @@
 package com.utils.reactive.flowable;
 
+import com.utils.commons.lib.FileReader;
+import init.env.global.vars.EnvVars;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import java.util.ArrayList;
+
 public class FlowableExamples {
+    private static int indexId = 0;
     /**
      * Function that display a flow with pow(n,n) for each number (range:1 to 10) and filter when n%3 = true
      *         //Example: Pow of each element and after that filter only where n%3 = 0 is true.
@@ -37,7 +44,6 @@ public class FlowableExamples {
      */
     public static void intFlowEmittedSchedule(){
         try {
-             Flowable.range(1,10).subscribeOn(Schedulers.newThread()).map(v->v*v).blockingSubscribe(System.out::println);
             Flowable.range(1, 5)
                     .subscribeOn(Schedulers.io())
                     .map(v -> v * v)
@@ -45,5 +51,39 @@ public class FlowableExamples {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Function that performs a list search - Benchmark comparison againt streams
+     * RxJava Implementation using Observable Class for Reactive Programming
+     * @param searchString
+     * @return ListWithMatchesFound
+     */
+    public static ArrayList<String> execSearchUsingSchedulersInCSVtoRecord(String searchString) throws Exception {
+        ArrayList<String> searchResultList = new ArrayList<>();
+
+        System.out.println("Size: "+FileReader.getRecordsInCSVFile(EnvVars.PATH_FILE_BITACORAS,0).size());
+        Disposable disposable =
+                Observable.fromIterable(FileReader.getRecordsInCSVFile(EnvVars.PATH_FILE_BITACORAS,0))
+                .subscribeOn(Schedulers.io())
+                .filter(item->item.matches(searchString))
+                .subscribe(item-> System.out.println("Found: "+item),
+                        error-> System.out.println("Fail: "+error),
+                        ()-> System.out.println("Done Execution")
+                );
+
+        ((Disposable) disposable).dispose();
+        /*try {
+            Observable.fromIterable(FileReader.getRecordsInCSVFile(EnvVars.PATH_FILE_BITACORAS,0))
+                    .subscribeOn(Schedulers.io())
+                    .filter(item->item.matches(searchString))
+                    .subscribe(item-> System.out.println("Found: "+item),
+                            error-> System.out.println("Fail: "+error),
+                            ()-> System.out.println("Done Execution")
+                    );
+        } catch (Exception e) {
+            System.out.println("Exception:"+e);
+        }*/
+        return searchResultList;
     }
 }

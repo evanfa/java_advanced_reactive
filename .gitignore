@@ -36,3 +36,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+/init/env/global/vars/EnvVars.java
